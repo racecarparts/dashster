@@ -1,0 +1,16 @@
+{{define "my_cal"}}
+<link href="/static/css/calendar.css" type="text/css" rel="stylesheet" />
+
+<div class="card cal-card">
+    <div class="card-body">
+        <div class="card-title">
+            <h6>Agenda</h6>
+            <small class="text-muted" data-container="mycal-interval"></small>
+        </div>
+        <pre class="card-text mycal-cal" data-container="my-cal"></pre>
+    </div>
+</div>
+
+
+<script src="/static/js/my-cal.js"></script>
+{{end}}

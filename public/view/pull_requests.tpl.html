@@ -1,0 +1,59 @@
+{{define "pull_requests"}}
+<div class="card pr-card">
+    <div class="card-body">
+        <div class="card-title">
+            <h6>Pull Requests</h6>
+            <small class="text-muted" data-container="pr-interval"></small>
+        </div>
+
+        <div class="card-text">
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Repo Name</th>
+                    <th scope="col">Number</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Reviews</th>
+                </tr>
+                </thead>
+                <tbody data-container="pull-requests">
+
+<!--                <tr>-->
+<!--                    <th scope="row">reservations</th>-->
+<!--                    <td><a onclick="openPRUrl('https://github.com/enderlabs/reservations/pull/276')" href="#">276</a></td>-->
+<!--                    <td>TE-23320 Subscription Renewals</td>-->
+<!--                    <td>-->
+<!--                        jacobdh: APPROVED<br>-->
+<!--                        jackson-david: COMMENTED<br>-->
+<!--                        jackson-david: COMMENTED<br>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <th scope="row">teem-dev-deploy</th>-->
+<!--                    <td><a href="https://github.com/enderlabs/teem-dev-deploy/pull/56" target="_blank">56</a></td>-->
+<!--                    <td>TE-28583-setup-celery-on-dev-server</td>-->
+<!--                    <td>-->
+<!--                        racecarparts: APPROVED<br>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <th scope="row">eventboard.io</th>-->
+<!--                    <td><a href="https://github.com/enderlabs/eventboard.io/pull/6302" target="_blank">6302</a></td>-->
+<!--                    <td>Release fix for broken migration</td>-->
+<!--                    <td>-->
+
+<!--                    </td>-->
+<!--                </tr>-->
+
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/pull-requests.js"></script>
+{{end}}

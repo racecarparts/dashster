@@ -1,0 +1,57 @@
+{{define "world_clock"}}
+<link href="/static/css/world_clock.css" type="text/css" rel="stylesheet" />
+
+<div class="card wc-card">
+    <div class="card-body">
+        <div class="card-title">
+            <h6>World Clock</h6>
+            <small class="text-muted" data-container="daylight-map-interval"></small>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="wc-container">
+                        <svg id="daylight-map"></svg>
+<!--                        <div class="wc-controls">-->
+<!--                            <p class="curr-time">-->
+<!--                                <a class="js-skip" data-skip="-60" href="#">-->
+<!--                                    &lsaquo;-->
+<!--                                </a>-->
+<!--                                <span></span>-->
+<!--                                <a class="js-skip" data-skip="60" href="#">-->
+<!--                                    &rsaquo;-->
+<!--                                </a>-->
+<!--                            </p>-->
+<!--                            <p class="curr-date">-->
+<!--                                <a class="js-skip big-jump" data-skip="-43200" href="#">-->
+<!--                                    &laquo;-->
+<!--                                </a>-->
+<!--                                <a class="js-skip" data-skip="-1440" href="#">-->
+<!--                                    &lsaquo;-->
+<!--                                </a>-->
+<!--                                <span></span>-->
+<!--                                <a class="js-skip" data-skip="1440" href="#">-->
+<!--                                    &rsaquo;-->
+<!--                                </a>-->
+<!--                                <a class="js-skip big-jump" data-skip="43200" href="#">-->
+<!--                                    &raquo;-->
+<!--                                </a>-->
+<!--                            </p>-->
+<!--                        </div>-->
+                    </div>
+<!--                    <p class="wc-animate"><a href="#" class="js-animate"></a></p>-->
+                </div>
+                <div class="col-auto">
+                    <pre class="card-text wc-clock-times" data-container="world_clock"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<h4>World Clock</h4>-->
+<!--<div data-container="world_clock"></div>-->
+<!--<button type="button" class="btn btn-outline-primary" onclick="loadClock()">Primary</button>-->
+
+<script src="/static/js/world_clock.js"></script>
+{{end}}

@@ -1,0 +1,15 @@
+{{define "weather"}}
+<link href="/static/css/weather.css" type="text/css" rel="stylesheet" />
+
+<div class="card weather-card">
+    <div class="card-body">
+        <div class="card-title">
+            <h6>Weather</h6>
+            <small class="text-muted" data-container="weather-interval"></small>
+        </div>
+        <pre class="card-text weather-report" data-container="weather"></pre>
+    </div>
+</div>
+
+<script src="/static/js/weather.js"></script>
+{{end}}
