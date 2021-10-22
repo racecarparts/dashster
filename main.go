@@ -10,6 +10,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"time"
 )
 
 var (
@@ -87,6 +88,8 @@ func app(prefixChannel chan string) {
 		Addr:    portAddress,
 		Handler: router,
 	}
+	server.WriteTimeout = 3 * time.Minute
+	server.ReadTimeout = 3 * time.Minute
 	server.ListenAndServe()
 }
 

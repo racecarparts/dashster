@@ -56,6 +56,7 @@ function writePRs(prData) {
 }
 
 function loadPRs() {
+    disableButton('load-prs')
     writeWidget('pr-interval', 'loading...')
     fetch('/pullrequests', {
         method: 'get'
@@ -63,9 +64,11 @@ function loadPRs() {
         .then(r => r.json())
         .then(jsonData => {
             writePRs(jsonData)
+            enableButton('load-prs')
         })
         .catch(err => {
             writeWidget('pr-interval', 'error: ' + err)
+            enableButton('load-prs')
             console.log(err)
         })
 }
@@ -116,6 +119,7 @@ function loadPRs() {
 //             }
 //         ]
 //     })
+
 loadPRs()
 setInterval(() => {
     loadPRs()

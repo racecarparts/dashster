@@ -3,6 +3,19 @@ function openUrl(url) {
     open(url)
 }
 
+// async function fetchWithTimeout(resource, options = {}) {
+//     const { timeout = 240000 } = options;
+//
+//     const controller = new AbortController();
+//     const id = setTimeout(() => controller.abort(), timeout);
+//     const response = await fetch(resource, {
+//         ...options,
+//         signal: controller.signal
+//     });
+//     clearTimeout(id);
+//     return response;
+// }
+
 function timeIntervalStr(intervalMillis) {
     let d = Date.now()
     let now = new Date(d)
@@ -15,11 +28,29 @@ function timeIntervalStr(intervalMillis) {
     return tf.format(now) + " -> " + tf.format(next)
 }
 
+function getButtonEl(dataButtonName) {
+    const buttonSelector = "[data-button-name=" + dataButtonName + "]"
+    const buttonEl = document.querySelectorAll(buttonSelector)
+    if (buttonEl.length !== 1) {
+        console.log("Invalid button: " + buttonSelector)
+        return
+    }
+    return buttonEl.item(0);
+}
+
+function disableButton(dataButtonName) {
+    getButtonEl(dataButtonName).disabled = true
+}
+
+function enableButton(dataButtonName) {
+    getButtonEl(dataButtonName).disabled = false
+}
+
 function writeWidget(dataContainerName, innerHTML) {
-    const continerSelector = "[data-container=" + dataContainerName + "]"
-    const containerEl = document.querySelectorAll(continerSelector)
+    const containerSelector = "[data-container=" + dataContainerName + "]"
+    const containerEl = document.querySelectorAll(containerSelector)
     if (containerEl.length !== 1) {
-        console.log("Invalid container to write data: " + continerSelector)
+        console.log("Invalid container to write data: " + containerSelector)
         return
     }
     let container = containerEl.item(0);

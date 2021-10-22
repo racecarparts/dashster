@@ -16,3 +16,10 @@ body, pre, table {
     /*padding-right: calc(var(--bs-gutter-x) * .5);*/
     /*padding-left: calc(var(--bs-gutter-x) * .5);*/
 }
+
+.btn-xs {
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+}

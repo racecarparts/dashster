@@ -1,4 +1,4 @@
-const daylightMapInterval = 300000 // 5 minutes
+const daylightMapInterval = 900000 // 15 minutes
 
 function calcTimes(timeZones) {
     let d = new Date()
@@ -79,7 +79,6 @@ loadClock();
 
 /* SVG daylight map */
 function daylightMap() {
-    writeWidget('daylight-map-interval', timeIntervalStr(daylightMapInterval))
     var DaylightMap, updateDateTime;
 
     DaylightMap = (function() {
@@ -354,16 +353,16 @@ function daylightMap() {
             return cities.reverse();
         };
 
-        DaylightMap.prototype.redrawSun = function(animate) {
-            var curX, xy;
-            xy = this.getSunPosition();
-            curX = parseInt(d3.select("#sun").attr('cx'));
-            if (animate && ((Math.abs(xy.x - curX)) < (this.MAP_WIDTH * 0.8))) {
-                return d3.select("#sun").transition().duration(this.options.tickDur).ease('linear').attr('cx', xy.x).attr('cy', xy.y);
-            } else {
-                return d3.select("#sun").attr('cx', xy.x).attr('cy', xy.y);
-            }
-        };
+        // DaylightMap.prototype.redrawSun = function(animate) {
+        //     var curX, xy;
+        //     xy = this.getSunPosition();
+        //     curX = parseInt(d3.select("#sun").attr('cx'));
+        //     if (animate && ((Math.abs(xy.x - curX)) < (this.MAP_WIDTH * 0.8))) {
+        //         return d3.select("#sun").transition().duration(this.options.tickDur).ease('linear').attr('cx', xy.x).attr('cy', xy.y);
+        //     } else {
+        //         return d3.select("#sun").attr('cx', xy.x).attr('cy', xy.y);
+        //     }
+        // };
 
         DaylightMap.prototype.redrawCities = function() {
             var k;
@@ -381,29 +380,29 @@ function daylightMap() {
             })(this));
         };
 
-        DaylightMap.prototype.redrawPath = function(animate) {
-            var nightPath, path;
-            path = this.getPathString(this.isNorthSun(this.currDate));
-            nightPath = d3.select('#nightPath');
-            if (animate) {
-                return nightPath.transition().duration(this.options.tickDur).ease('linear').attr('d', path);
-            } else {
-                return nightPath.attr('d', path);
-            }
-        };
-
-        DaylightMap.prototype.redrawAll = function(increment, animate) {
-            if (increment == null) {
-                increment = 15;
-            }
-            if (animate == null) {
-                animate = true;
-            }
-            this.currDate.setMinutes(this.currDate.getMinutes() + increment);
-            this.redrawPath(animate);
-            this.redrawSun(animate);
-            return this.redrawCities();
-        };
+        // DaylightMap.prototype.redrawPath = function(animate) {
+        //     var nightPath, path;
+        //     path = this.getPathString(this.isNorthSun(this.currDate));
+        //     nightPath = d3.select('#nightPath');
+        //     if (animate) {
+        //         return nightPath.transition().duration(this.options.tickDur).ease('linear').attr('d', path);
+        //     } else {
+        //         return nightPath.attr('d', path);
+        //     }
+        // };
+        //
+        // DaylightMap.prototype.redrawAll = function(increment, animate) {
+        //     if (increment == null) {
+        //         increment = 15;
+        //     }
+        //     if (animate == null) {
+        //         animate = true;
+        //     }
+        //     this.currDate.setMinutes(this.currDate.getMinutes() + increment);
+        //     this.redrawPath(animate);
+        //     this.redrawSun(animate);
+        //     return this.redrawCities();
+        // };
 
         DaylightMap.prototype.drawAll = function() {
             this.drawSVG();
@@ -419,20 +418,20 @@ function daylightMap() {
             return $('#sun').insertBefore('#land');
         };
 
-        DaylightMap.prototype.animate = function(increment) {
-            if (increment == null) {
-                increment = 0;
-            }
-            if (!this.isAnimating) {
-                this.isAnimating = true;
-                return this.animInterval = setInterval((function(_this) {
-                    return function() {
-                        _this.redrawAll(increment);
-                        return $(document).trigger('update-date-time', _this.currDate);
-                    };
-                })(this), this.options.tickDur);
-            }
-        };
+        // DaylightMap.prototype.animate = function(increment) {
+        //     if (increment == null) {
+        //         increment = 0;
+        //     }
+        //     if (!this.isAnimating) {
+        //         this.isAnimating = true;
+        //         return this.animInterval = setInterval((function(_this) {
+        //             return function() {
+        //                 _this.redrawAll(increment);
+        //                 return $(document).trigger('update-date-time', _this.currDate);
+        //             };
+        //         })(this), this.options.tickDur);
+        //     }
+        // };
 
         DaylightMap.prototype.stop = function() {
             this.isAnimating = false;
@@ -441,15 +440,15 @@ function daylightMap() {
 
         DaylightMap.prototype.init = function() {
             this.drawAll();
-            return setInterval((function(_this) {
-                return function() {
-                    if (_this.isAnimating) {
-                        return;
-                    }
-                    _this.redrawAll(1, false);
-                    return $(document).trigger('update-date-time', _this.currDate);
-                };
-            })(this), 60000);
+            // return setInterval((function(_this) {
+            //     return function() {
+            //         if (_this.isAnimating) {
+            //             return;
+            //         }
+            //         _this.redrawAll(1, false);
+            //         return $(document).trigger('update-date-time', _this.currDate);
+            //     };
+            // })(this), 60000);
         };
 
         return DaylightMap;
@@ -462,46 +461,53 @@ function daylightMap() {
     };
 
     $(document).ready(function() {
+        disableButton('load-daylight-map')
+        writeWidget('daylight-map-interval', 'loading...')
+
         var map, svg;
         svg = document.getElementById('daylight-map');
         svg.innerHTML = "";
         map = new DaylightMap(svg, new Date());
         map.init();
-        updateDateTime(map.currDate);
-        $(document).on('update-date-time', function(date) {
-            return updateDateTime(map.currDate);
-        });
-        $('.toggle-btn').on('click', function(e) {
-            var $el;
-            e.preventDefault();
-            $el = $(this);
-            return $el.toggleClass('active');
-        });
-        $('.js-skip').on('click', function(e) {
-            var $el, animate;
-            e.preventDefault();
-            $el = $(this);
-            animate = false;
-            map.stop();
-            $('.js-animate').removeClass('animating');
-            if ($el.attr('data-animate')) {
-                animate = true;
-            }
-            map.redrawAll(parseInt($(this).attr('data-skip')), animate);
-            return updateDateTime(map.currDate);
-        });
-        return $('.js-animate').on('click', function(e) {
-            var $el;
-            $el = $(this);
-            e.preventDefault();
-            if ($el.hasClass('animating')) {
-                $el.removeClass('animating');
-                return map.stop();
-            } else {
-                $el.addClass('animating');
-                return map.animate(10);
-            }
-        });
+        // updateDateTime(map.currDate);
+        // $(document).on('update-date-time', function(date) {
+        //     return updateDateTime(map.currDate);
+        // });
+        // $('.toggle-btn').on('click', function(e) {
+        //     var $el;
+        //     e.preventDefault();
+        //     $el = $(this);
+        //     return $el.toggleClass('active');
+        // });
+        // $('.js-skip').on('click', function(e) {
+        //     var $el, animate;
+        //     e.preventDefault();
+        //     $el = $(this);
+        //     animate = false;
+        //     map.stop();
+        //     $('.js-animate').removeClass('animating');
+        //     if ($el.attr('data-animate')) {
+        //         animate = true;
+        //     }
+        //     map.redrawAll(parseInt($(this).attr('data-skip')), animate);
+        //     return updateDateTime(map.currDate);
+        // });
+
+        enableButton('load-daylight-map')
+        writeWidget('daylight-map-interval', timeIntervalStr(daylightMapInterval))
+
+        // return $('.js-animate').on('click', function(e) {
+        //     var $el;
+        //     $el = $(this);
+        //     e.preventDefault();
+        //     if ($el.hasClass('animating')) {
+        //         $el.removeClass('animating');
+        //         return map.stop();
+        //     } else {
+        //         $el.addClass('animating');
+        //         return map.animate(10);
+        //     }
+        // });
     });
 
 }

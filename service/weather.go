@@ -33,7 +33,7 @@ func Weather() []model.SimpleWeather {
         }
         simpleWeather := model.SimpleWeather{
             Location:      locName,
-            CurConditions: report.Weather[0].Description,
+            CurConditions: report.Weather[len(report.Weather)-1].Description,
             CurTemp:       temp,
         }
         simpleWeatherReports[i] = simpleWeather
