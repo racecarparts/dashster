@@ -22,7 +22,8 @@ function timeIntervalStr(intervalMillis) {
     let next = new Date(d + intervalMillis)
     let timeOpts = {
         hour: 'numeric',
-        minute: 'numeric'
+        minute: 'numeric',
+        second: 'numeric'
     }
     let tf = new Intl.DateTimeFormat([], timeOpts)
     return tf.format(now) + " -> " + tf.format(next)
