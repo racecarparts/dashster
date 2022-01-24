@@ -11,6 +11,11 @@ function writePRRows(prDataArr, outerEl, sectionTitle) {
         repoNameHeadEl.innerHTML = pr.repository_name
         rowEl.appendChild(repoNameHeadEl)
 
+        let prShaEl = document.createElement("th")
+        prShaEl.className = "text-nowrap"
+        prShaEl.innerHTML = pr.sha
+        rowEl.appendChild(prShaEl)
+
         let prLinkCellEl = document.createElement("td")
         let prLinkEl = document.createElement("a")
         prLinkEl.setAttribute("onclick", "openUrl('"+ pr.review_url +"')")
@@ -93,7 +98,8 @@ function loadPRs() {
 //                 title: "TE-28583-setup-celery-on-dev-server",
 //                 repository_name: "teem-dev-deploy",
 //                 review_url: "https://github.com/enderlabs/teem-dev-deploy/pull/56",
-//                 reviews: [{user: {login: "racecarparts"}, state: "APPROVED"}]
+//                 reviews: [{user: {login: "racecarparts"}, state: "APPROVED"}],
+//                 sha: "6dcb09b"
 //             },
 //             {
 //                 is_draft: false,

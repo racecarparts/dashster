@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/racecarparts/dashster/model"
+	"sync"
 )
 
 //func openPRListAsStr(orgs []model.GithubOrg, nextInterval time.Duration) string {
@@ -171,6 +172,7 @@ func createSimplePR(repo model.Repo, pr model.PullRequest) (model.SimplePullRequ
 		Title:          pr.Title,
 		ReviewUrl:      pr.HtmlUrl,
 		IsDraft:        pr.Draft,
+		SHA:            pr.Head.SHA[0:7],
 	}
 
 	reviews, err := getGithubPullReviews(repo, pr)
@@ -269,12 +271,30 @@ func getGithubPRs(orgs []model.GithubOrg) model.SimplePullRequests {
 		return
 	}
 
-	myTeamPRs, requestedTeamPRs, err := iterateRepos(teamRepos)
-	myOtherPRs, requestedOtherPRs, err := iterateRepos(otherRepos)
+	var myTeamPRs []model.SimplePullRequest
+	var requestedTeamPRs []model.SimplePullRequest
+	var myOtherPRs []model.SimplePullRequest
+	var requestedOtherPRs []model.SimplePullRequest
+
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		myTeamPRs, requestedTeamPRs, err = iterateRepos(teamRepos)
+
+	}()
+
+	go func() {
+		defer wg.Done()
+		myOtherPRs, requestedOtherPRs, err = iterateRepos(otherRepos)
+	}()
+
 	if err != nil {
 		prs.Message = err.Error()
 		return prs
 	}
+
+	wg.Wait()
 
 	myPRs := append(myTeamPRs, myOtherPRs...)
 	requestedPRs := append(requestedTeamPRs, requestedOtherPRs...)

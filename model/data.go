@@ -54,11 +54,12 @@ type SimplePullRequests struct {
 type SimplePullRequest struct {
 	RepositoryName string       `json:"repository_name"`
 	Number         int          `json:"number"`
-	User           string   `json:"user"`
+	User           string       `json:"user"`
 	Title          string       `json:"title"`
 	Reviews        []PullReview `json:"reviews"`
 	ReviewUrl      string       `json:"review_url"`
 	IsDraft        bool         `json:"is_draft"`
+	SHA            string       `json:"sha"`
 }
 
 type MyCal struct {
@@ -88,6 +89,12 @@ type PullRequest struct {
 	RequestedTeams     []GithubTeam `json:"requested_teams"`
 	State              string       `json:"state"`
 	Draft              bool         `json:"draft"`
+	Head               GithubHead   `json:"head"`
+}
+
+type GithubHead struct {
+	Label string `json:"label"`
+	SHA   string `json:"sha"`
 }
 
 type PullReview struct {
