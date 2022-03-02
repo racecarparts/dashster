@@ -43,7 +43,7 @@ function calcTimes(timeZones) {
         }
         let clockTime24 = formatter24.format(d)
 
-        time += timeZone.short_tz + " " + clockTime + " (" + clockTime24 + ") " + timeZone.utc_offset
+        time += timeZone.tz + " " + clockTime + " (" + clockTime24 + ") " + timeZone.utc_offset
         times.push(time)
     }
 
