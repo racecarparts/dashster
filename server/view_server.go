@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	viewDir     = "public/view/*"
-	staticDir   = "public"
+	viewDir   = "public/view/*"
+	staticDir = "public"
 )
 
 var (

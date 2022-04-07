@@ -26,6 +26,10 @@ func populateGithubTeams(orgs []model.GithubOrg) []model.GithubOrg {
 
 		team := model.GithubTeam{}
 
+		if org.Name == "" || org.TeamNameSlug == "" {
+			return orgs
+		}
+
 		teamUrl := fmt.Sprintf("https://api.github.com/orgs/%s/teams/%s", org.Name, org.TeamNameSlug)
 		teamBody, err := getRequestBasicAuth(teamUrl, authToken)
 		if err != nil {
@@ -86,6 +90,9 @@ func getGithubOrgRepos(orgs []model.GithubOrg) (teamRepos map[int]model.Repo, ot
 		url := ""
 		hasTeamRepos := org.TeamNameSlug != ""
 		authToken := org.AccessKey
+		if !hasTeamRepos {
+			continue
+		}
 		for {
 			var moreRepos []model.Repo
 			var body []byte
@@ -141,6 +148,9 @@ func getGithubPullReviews(repo model.Repo, pr model.PullRequest) ([]model.PullRe
 	reviews := make([]model.PullReview, 0)
 	page := 1
 	for {
+		if repo.OrgName == "" || repo.Name == "" {
+			continue
+		}
 		body, err := getRequestBasicAuth(fmt.Sprintf("https://api.github.com/repos/%s/%s/pulls/%d/reviews?page=%d&per_page=100", repo.OrgName, repo.Name, pr.Number, page), repo.AuthToken)
 		if err != nil {
 			return reviews, err
@@ -201,6 +211,9 @@ func getGithubPRs(orgs []model.GithubOrg) model.SimplePullRequests {
 		for _, repo := range repos {
 			page := 1
 			for {
+				if repo.OrgName == "" || repo.Name == "" {
+					continue
+				}
 				body, err := getRequestBasicAuth(fmt.Sprintf("https://api.github.com/repos/%s/%s/pulls?page=%d&per_page=100", repo.OrgName, repo.Name, page), repo.AuthToken)
 				if err != nil {
 					return myPRs, requestedPRs, err
@@ -305,106 +318,110 @@ func getGithubPRs(orgs []model.GithubOrg) model.SimplePullRequests {
 	return prs
 }
 
-func getOpenGithubPRs(orgs []model.GithubOrg) ([]string, error) {
-	pullRequests := make([]string, 0)
-
-	teamRepos, otherRepos, err := getGithubOrgRepos(orgs)
-	orgs = populateGithubTeams(orgs)
-	if err != nil {
-		pullRequests = append(pullRequests, err.Error())
-		return pullRequests, err
-	}
-
-	appendPRInfo := func(prInfos []string, repo model.Repo, pr model.PullRequest) []string {
-		draftStatus := ""
-		if pr.Draft {
-			draftStatus = "(DRAFT) "
-		}
-		reviews, err := getGithubPullReviews(repo, pr)
-		reviewStates := ""
-		if err != nil {
-			reviewStates = fmt.Sprintf("!! %s: %s", "error getting pr reviews", err.Error())
-		}
-
-		for _, review := range reviews {
-			reviewStates = fmt.Sprintf("%s %s:%s ", reviewStates, review.User.Login, review.State)
-		}
-		return append(prInfos, fmt.Sprintf("  * %s: \n    %s%s\n    Reviews:%s\n    %s\n", repo.Name, draftStatus, pr.Title, reviewStates, pr.HtmlUrl))
-	}
-
-	iterateRepos := func(repos map[int]model.Repo) (myPRs []string, requestedPRs []string, err error) {
-		myPRs = make([]string, 0)
-		requestedPRs = make([]string, 0)
-
-		for _, repo := range repos {
-			page := 1
-			for {
-				body, err := getRequestBasicAuth(fmt.Sprintf("https://api.github.com/repos/%s/%s/pulls?page=%d&per_page=100", repo.OrgName, repo.Name, page), repo.AuthToken)
-				if err != nil {
-					pullRequests = append(pullRequests, err.Error())
-					return myPRs, requestedPRs, err
-				}
-				if len(body) < 10 {
-					break
-				}
-				repoPRs := make([]model.PullRequest, 0)
-				err = json.Unmarshal(body, &repoPRs)
-				if err != nil {
-					pullRequests = append(pullRequests, err.Error())
-					return myPRs, requestedPRs, err
-				}
-
-			PRLoop:
-				for _, pr := range repoPRs {
-					if pr.Assignee.Login == repo.Username {
-						myPRs = appendPRInfo(myPRs, repo, pr)
-						continue PRLoop
-					}
-
-					for _, reviewer := range pr.RequestedReviewers {
-						for _, org := range orgs {
-							if reviewer.Login == org.Username {
-								requestedPRs = appendPRInfo(requestedPRs, repo, pr)
-								continue PRLoop
-							}
-						}
-					}
-
-					for _, team := range pr.RequestedTeams {
-						for _, org := range orgs {
-							if team.Slug == org.TeamNameSlug {
-								requestedPRs = appendPRInfo(requestedPRs, repo, pr)
-								continue PRLoop
-							}
-						}
-					}
-
-					for _, org := range orgs {
-						for _, teamMember := range org.Team.Members {
-							if teamMember.Login == pr.Assignee.Login {
-								requestedPRs = appendPRInfo(requestedPRs, repo, pr)
-								continue PRLoop
-							}
-						}
-					}
-				}
-				page += 1
-			}
-		}
-
-		return
-	}
-
-	myTeamPRs, requestedTeamPRs, err := iterateRepos(teamRepos)
-	myOtherPRs, requestedOtherPRs, err := iterateRepos(otherRepos)
-
-	myPRs := append(myTeamPRs, myOtherPRs...)
-	requestedPRs := append(requestedTeamPRs, requestedOtherPRs...)
-
-	pullRequests = append(pullRequests, "  My PRs\n  ------")
-	pullRequests = append(pullRequests, myPRs...)
-	pullRequests = append(pullRequests, "  Requested PRs\n  -------------")
-	pullRequests = append(pullRequests, requestedPRs...)
-
-	return pullRequests, nil
-}
+//func getOpenGithubPRs(orgs []model.GithubOrg) ([]string, error) {
+//	pullRequests := make([]string, 0)
+//
+//	teamRepos, otherRepos, err := getGithubOrgRepos(orgs)
+//	orgs = populateGithubTeams(orgs)
+//	if err != nil {
+//		pullRequests = append(pullRequests, err.Error())
+//		return pullRequests, err
+//	}
+//
+//	appendPRInfo := func(prInfos []string, repo model.Repo, pr model.PullRequest) []string {
+//		draftStatus := ""
+//		if pr.Draft {
+//			draftStatus = "(DRAFT) "
+//		}
+//		reviews, err := getGithubPullReviews(repo, pr)
+//		reviewStates := ""
+//		if err != nil {
+//			reviewStates = fmt.Sprintf("!! %s: %s", "error getting pr reviews", err.Error())
+//		}
+//
+//		for _, review := range reviews {
+//			reviewStates = fmt.Sprintf("%s %s:%s ", reviewStates, review.User.Login, review.State)
+//		}
+//		return append(prInfos, fmt.Sprintf("  * %s: \n    %s%s\n    Reviews:%s\n    %s\n", repo.Name, draftStatus, pr.Title, reviewStates, pr.HtmlUrl))
+//	}
+//
+//	iterateRepos := func(repos map[int]model.Repo) (myPRs []string, requestedPRs []string, err error) {
+//		myPRs = make([]string, 0)
+//		requestedPRs = make([]string, 0)
+//
+//		for _, repo := range repos {
+//			page := 1
+//			for {
+//				if repo.OrgName == "" || repo.Name == "" {
+//					continue
+//				}
+//
+//				body, err := getRequestBasicAuth(fmt.Sprintf("https://api.github.com/repos/%s/%s/pulls?page=%d&per_page=100", repo.OrgName, repo.Name, page), repo.AuthToken)
+//				if err != nil {
+//					pullRequests = append(pullRequests, err.Error())
+//					return myPRs, requestedPRs, err
+//				}
+//				if len(body) < 10 {
+//					break
+//				}
+//				repoPRs := make([]model.PullRequest, 0)
+//				err = json.Unmarshal(body, &repoPRs)
+//				if err != nil {
+//					pullRequests = append(pullRequests, err.Error())
+//					return myPRs, requestedPRs, err
+//				}
+//
+//			PRLoop:
+//				for _, pr := range repoPRs {
+//					if pr.Assignee.Login == repo.Username {
+//						myPRs = appendPRInfo(myPRs, repo, pr)
+//						continue PRLoop
+//					}
+//
+//					for _, reviewer := range pr.RequestedReviewers {
+//						for _, org := range orgs {
+//							if reviewer.Login == org.Username {
+//								requestedPRs = appendPRInfo(requestedPRs, repo, pr)
+//								continue PRLoop
+//							}
+//						}
+//					}
+//
+//					for _, team := range pr.RequestedTeams {
+//						for _, org := range orgs {
+//							if team.Slug == org.TeamNameSlug {
+//								requestedPRs = appendPRInfo(requestedPRs, repo, pr)
+//								continue PRLoop
+//							}
+//						}
+//					}
+//
+//					for _, org := range orgs {
+//						for _, teamMember := range org.Team.Members {
+//							if teamMember.Login == pr.Assignee.Login {
+//								requestedPRs = appendPRInfo(requestedPRs, repo, pr)
+//								continue PRLoop
+//							}
+//						}
+//					}
+//				}
+//				page += 1
+//			}
+//		}
+//
+//		return
+//	}
+//
+//	myTeamPRs, requestedTeamPRs, err := iterateRepos(teamRepos)
+//	myOtherPRs, requestedOtherPRs, err := iterateRepos(otherRepos)
+//
+//	myPRs := append(myTeamPRs, myOtherPRs...)
+//	requestedPRs := append(requestedTeamPRs, requestedOtherPRs...)
+//
+//	pullRequests = append(pullRequests, "  My PRs\n  ------")
+//	pullRequests = append(pullRequests, myPRs...)
+//	pullRequests = append(pullRequests, "  Requested PRs\n  -------------")
+//	pullRequests = append(pullRequests, requestedPRs...)
+//
+//	return pullRequests, nil
+//}

@@ -16,8 +16,8 @@ import (
 var (
 	//go:embed public
 	EmbeddedFiles embed.FS
-	RepoRoot string
-	events chan string // keyboard events
+	RepoRoot      string
+	events        chan string // keyboard events
 )
 
 func init() {
@@ -73,7 +73,6 @@ func app(prefixChannel chan string) {
 	server.NewViewServer(router)
 	server.NewDataServer(router)
 
-
 	http.FileServer(http.FS(server.PublicFiles))
 
 	// get an ephemeral port, so we're guaranteed not to conflict with anything else
@@ -92,5 +91,3 @@ func app(prefixChannel chan string) {
 	server.ReadTimeout = 3 * time.Minute
 	server.ListenAndServe()
 }
-
-

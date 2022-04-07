@@ -25,11 +25,11 @@ type Calendar struct{}
 
 type WeatherConfig struct {
 	Locations      []WeatherLocation `json:"locations"`
-	WeatherDataUrl string   `json:"weatherDataUrl"`
+	WeatherDataUrl string            `json:"weatherDataUrl"`
 }
 
 type WeatherLocation struct {
-	Location string `json:"location"`
+	Location    string `json:"location"`
 	DisplayName string `json:"display_name"`
 }
 
