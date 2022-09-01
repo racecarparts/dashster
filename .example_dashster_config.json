@@ -1,0 +1,81 @@
+{
+  "world_clock": {
+    "highlight_current_tz": true,
+    "time_zones": [
+      {
+        "time_zone": "US/Pacific",
+        "group": 0
+      },
+      {
+        "time_zone": "US/Mountain",
+        "group": 0
+      },
+      {
+        "time_zone": "US/Central",
+        "group": 0
+      },
+      {
+        "time_zone": "US/Eastern",
+        "group": 0
+      },
+      {
+        "time_zone": "Asia/Kolkata",
+        "group": 1
+      },
+      {
+        "time_zone": "UTC",
+        "group": 2
+      }
+    ]
+  },
+  "calendar": {},
+  "weather": {
+    "locations": [
+      {
+        "location": "Stansbury Park,UT,US",
+        "display_name": "Stansbury Park"
+      },
+      {
+        "location": "Rexburg,ID,US",
+        "display_name": "Rexburg"
+      },
+      {
+        "location": "Provo,UT,US",
+        "display_name": "Provo"
+      },
+      {
+        "location": "Salt Lake City,UT,US",
+        "display_name": "Salt Lake"
+      }
+    ],
+    "weatherDataUrl": "https://api.openweathermap.org/data/2.5/weather?appid=<super-secret-app-id>&units=imperial&q=%s"
+  },
+  "my_calendar": {
+    "excluded_calendars": [
+      "United States holidays",
+      "Holidays in United States",
+      "Radio Nets"
+    ]
+  },
+  "docker": {},
+  "github_pulls": {
+    "organizations": [
+      {
+        "name": "MovementMortgage",
+        "team_name_slug": "",
+        "username": "racecarparts",
+        "access_key": "<super-secret-access-key>",
+        "team": {
+          "id": 0,
+          "name": "",
+          "slug": "",
+          "members": [
+            {
+              "login": ""
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
