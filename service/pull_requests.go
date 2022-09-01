@@ -17,6 +17,10 @@ import (
 //}
 
 func PullRequests() model.SimplePullRequests {
+	if !model.AppConfig.GithubPulls.Enabled {
+		return model.SimplePullRequests{}
+	}
+
 	return getGithubPRs(model.AppConfig.GithubPulls.Organizations)
 }
 

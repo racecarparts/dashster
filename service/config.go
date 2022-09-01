@@ -52,6 +52,7 @@ func ReadOrCreateConfig() error {
 			},
 			Docker: model.Docker{},
 			GithubPulls: model.GithubPulls{
+				Enabled: false,
 				Organizations: []model.GithubOrg{
 					{
 						Name:         "",

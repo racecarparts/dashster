@@ -40,6 +40,7 @@ type MyCalendar struct {
 type Docker struct{}
 
 type GithubPulls struct {
+	Enabled       bool        `json:"enabled"`
 	Organizations []GithubOrg `json:"organizations"`
 }
 
