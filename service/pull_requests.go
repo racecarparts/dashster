@@ -90,9 +90,6 @@ func getGithubOrgRepos(orgs []model.GithubOrg) (teamRepos map[int]model.Repo, ot
 		url := ""
 		hasTeamRepos := org.TeamNameSlug != ""
 		authToken := org.AccessKey
-		if !hasTeamRepos {
-			continue
-		}
 		for {
 			var moreRepos []model.Repo
 			var body []byte
