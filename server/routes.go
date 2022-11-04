@@ -13,5 +13,6 @@ func (ds *dataServer) dataServerRoutes() {
 	ds.Router.HandleFunc("GET", "/weather", ds.handleWeather())
 	ds.Router.HandleFunc("GET", "/docker", ds.handleDocker())
 	ds.Router.HandleFunc("GET", "/pullrequests", ds.handlePullRequests())
+	ds.Router.HandleFunc("GET", "/mergerequests", ds.handleMergeRequests())
 	ds.Router.HandleFunc("GET", "/mycal", ds.handleMyCal())
 }

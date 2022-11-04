@@ -60,7 +60,7 @@ func setupUI(events chan string) error {
 
 	defer w.Destroy()
 	w.SetTitle("Dashster")
-	w.SetSize(1000, 1400, webview.HintNone)
+	w.SetSize(1024, 1600, webview.HintNone)
 	w.Navigate(prefix + "/view/index")
 	fmt.Println(prefix + "/view/index")
 	w.Run()

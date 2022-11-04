@@ -11,14 +11,14 @@ function writePRRows(prDataArr, outerEl, sectionTitle) {
         repoNameHeadEl.innerHTML = pr.repository_name
         rowEl.appendChild(repoNameHeadEl)
 
-        let prShaEl = document.createElement("th")
-        prShaEl.className = "text-nowrap"
-        prShaEl.innerHTML = pr.sha
-        rowEl.appendChild(prShaEl)
+        // let prShaEl = document.createElement("th")
+        // prShaEl.className = "text-nowrap"
+        // prShaEl.innerHTML = pr.sha
+        // rowEl.appendChild(prShaEl)
 
         let prLinkCellEl = document.createElement("td")
         let prLinkEl = document.createElement("a")
-        prLinkEl.setAttribute("onclick", "openUrl('"+ pr.review_url +"')")
+        prLinkEl.setAttribute("onclick", "openUrl('"+ pr.web_url +"')")
         prLinkEl.setAttribute("href", "#")
         prLinkEl.innerHTML = pr.number
         prLinkCellEl.appendChild(prLinkEl)
@@ -68,7 +68,7 @@ function writePRs(prData) {
 function loadPRs() {
     disableButton('load-prs')
     writeWidget('pr-interval', 'loading...')
-    fetch('/pullrequests', {
+    fetch('/mergerequests', {
         method: 'get'
     })
         .then(r => r.json())

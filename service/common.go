@@ -53,13 +53,25 @@ func getRequest(url string) ([]byte, error) {
 	return body, nil
 }
 
+func getRequestBearerAuth(url string, authToken string) ([]byte, error) {
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Add("Authorization", "Bearer "+authToken)
+	return getRequestWithAuthHeader(req)
+}
+
 func getRequestBasicAuth(url string, authToken string) ([]byte, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return []byte{}, err
+		return nil, err
 	}
 	req.Header.Add("Authorization", "Basic "+basicAuthToken(authToken))
+	return getRequestWithAuthHeader(req)
+}
 
+func getRequestWithAuthHeader(req *http.Request) ([]byte, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if resp != nil && resp.StatusCode != http.StatusOK {

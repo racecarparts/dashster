@@ -61,7 +61,7 @@
   "github_pulls": {
     "organizations": [
       {
-        "name": "MovementMortgage",
+        "name": "Example Co",
         "team_name_slug": "",
         "username": "racecarparts",
         "access_key": "<super-secret-access-key>",
@@ -75,6 +75,15 @@
             }
           ]
         }
+      }
+    ]
+  },
+  "gitlab": {
+    "organizations": [
+      {
+        "name": "Example",
+        "projects_base_url": "https://gitlab.example.com/api/v4/projects?starred=true&private_token=%s",
+        "private_token": "<super-secret-access-key>"
       }
     ]
   }

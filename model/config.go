@@ -9,6 +9,7 @@ type Config struct {
 	MyCalendar  MyCalendar    `json:"my_calendar"`
 	Docker      Docker        `json:"docker"`
 	GithubPulls GithubPulls   `json:"github_pulls"`
+	Gitlab      Gitlab        `json:"gitlab"`
 }
 
 type WorldClock struct {
@@ -50,4 +51,16 @@ type GithubOrg struct {
 	Username     string     `json:"username"`
 	AccessKey    string     `json:"access_key"`
 	Team         GithubTeam `json:"team"`
+}
+
+type Gitlab struct {
+	Enabled       bool        `json:"enabled"`
+	Organizations []GitlabOrg `json:"organizations"`
+}
+
+type GitlabOrg struct {
+	Name         string `json:"name"`
+	BaseUrl      string `json:"base_url"`
+	PrivateToken string `json:"private_token"`
+	Username     string `json:"username"`
 }

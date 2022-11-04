@@ -60,6 +60,7 @@ type SimplePullRequest struct {
 	ReviewUrl      string       `json:"review_url"`
 	IsDraft        bool         `json:"is_draft"`
 	SHA            string       `json:"sha"`
+	WebURL         string       `json:"web_url"`
 }
 
 type MyCal struct {

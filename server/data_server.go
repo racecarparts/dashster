@@ -75,6 +75,14 @@ func (ds *dataServer) handlePullRequests() http.HandlerFunc {
 	}
 }
 
+func (ds *dataServer) handleMergeRequests() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		mrs := service.MergeRequests()
+		mrJson, err := json.Marshal(mrs)
+		handleDataResp(mrJson, err, "Merge Requests", w)
+	}
+}
+
 func (ds *dataServer) handleMyCal() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		myCal := service.MyCal()

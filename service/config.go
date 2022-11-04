@@ -3,10 +3,11 @@ package service
 import (
 	"encoding/json"
 	"errors"
-	"github.com/racecarparts/dashster/model"
 	"io/ioutil"
 	"os"
 	"os/user"
+
+	"github.com/racecarparts/dashster/model"
 )
 
 var configFilename = ".dashster_config.json"
@@ -70,7 +71,18 @@ func ReadOrCreateConfig() error {
 							},
 						},
 					},
-				}},
+				},
+			},
+			Gitlab: model.Gitlab{
+				Enabled: false,
+				Organizations: []model.GitlabOrg{
+					{
+						Name:         "",
+						BaseUrl:      "",
+						PrivateToken: "",
+					},
+				},
+			},
 		}
 
 		confData, err := json.MarshalIndent(model.AppConfig, "", "  ")
