@@ -9,5 +9,6 @@ require (
 	github.com/matryer/way v0.0.0-20180416093233-9632d0c407b0
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/progrium/macdriver v0.2.0
 	github.com/webview/webview v0.0.0-20210330151455-f540d88dde4e
 )

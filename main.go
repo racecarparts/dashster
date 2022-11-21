@@ -3,14 +3,15 @@ package main
 import (
 	"embed"
 	"fmt"
-	"github.com/matryer/way"
-	"github.com/racecarparts/dashster/server"
-	"github.com/racecarparts/dashster/service"
-	"github.com/webview/webview"
 	"net"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/matryer/way"
+	"github.com/racecarparts/dashster/server"
+	"github.com/racecarparts/dashster/service"
+	"github.com/webview/webview"
 )
 
 var (
@@ -62,7 +63,6 @@ func setupUI(events chan string) error {
 	w.SetTitle("Dashster")
 	w.SetSize(1024, 1600, webview.HintNone)
 	w.Navigate(prefix + "/view/index")
-	fmt.Println(prefix + "/view/index")
 	w.Run()
 
 	return nil
