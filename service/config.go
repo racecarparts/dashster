@@ -5,7 +5,6 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
-	"os/user"
 
 	"github.com/racecarparts/dashster/model"
 )
@@ -13,11 +12,11 @@ import (
 var configFilename = ".dashster_config.json"
 
 func ReadOrCreateConfig() error {
-	userFolder, err := user.Current()
+	userFolder, err := os.UserHomeDir()
 	if err != nil {
 		return err
 	}
-	confFilePath := userFolder.HomeDir + string(os.PathSeparator) + configFilename
+	confFilePath := userFolder + string(os.PathSeparator) + configFilename
 
 	confFile, err := os.OpenFile(confFilePath, os.O_CREATE, 0644)
 	if err != nil {
