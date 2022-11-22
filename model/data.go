@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"github.com/docker/docker/api/types"
+)
 
 // Response types
 
@@ -46,8 +50,9 @@ type DockerStatOut struct {
 }
 
 type DockerStat struct {
-	Name   string `json:"name"`
-	Status string `json:"status"`
+	Name   string       `json:"name"`
+	Status string       `json:"status"`
+	Ports  []types.Port `json:"ports"`
 }
 
 type SimplePullRequests struct {
