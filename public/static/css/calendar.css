@@ -1,3 +1,22 @@
-.cal-card {
-    /*width: 36rem*/
+/* .fa {
+    font-size: 0.5em;
+} */
+
+/* table {
+    width: 100%;
+} */
+
+.calendar-table th {
+    text-align: right;
 }
+.calendar-table td {
+    width: 3ch;
+    /* height: 100px; */
+    text-align: right;
+    /* line-height: 100px !important; */
+    /* font-size: 1.5em; */
+}
+
+/* .hover {
+    background: #eee;
+} */

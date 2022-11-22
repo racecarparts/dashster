@@ -95,3 +95,21 @@ func getRequestWithAuthHeader(req *http.Request) ([]byte, error) {
 func basicAuthToken(token string) string {
 	return base64.StdEncoding.EncodeToString([]byte(token))
 }
+
+func padRight(str, pad string, lenght int) string {
+	for {
+		str += pad
+		if len(str) > lenght {
+			return str[0:lenght]
+		}
+	}
+}
+
+func padLeft(str, pad string, lenght int) string {
+	for {
+		str = pad + str
+		if len(str) > lenght {
+			return str[0:lenght]
+		}
+	}
+}

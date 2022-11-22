@@ -41,8 +41,13 @@ type SimpleWeather struct {
 	CurTemp       string `json:"cur_temp"`
 }
 
-type DockerStat struct {
+type DockerStatOut struct {
 	Stat string `json:"stat"`
+}
+
+type DockerStat struct {
+	Name   string `json:"name"`
+	Status string `json:"status"`
 }
 
 type SimplePullRequests struct {
