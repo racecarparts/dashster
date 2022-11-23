@@ -15,6 +15,7 @@ type ClockTime struct {
 	ShortTZ       string    `json:"short_tz"`
 	UtcOffset     string    `json:"utc_offset"`
 	IsCurrentZone bool      `json:"current_zone"`
+	People        []string  `json:"people"`
 }
 
 type DisplayCalendar struct {

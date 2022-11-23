@@ -4,27 +4,33 @@
     "time_zones": [
       {
         "time_zone": "US/Pacific",
-        "group": 0
+        "group": 0,
+        "people": ["Fred M"]
       },
       {
         "time_zone": "US/Mountain",
-        "group": 0
+        "group": 0,
+        "people": ["Parnelli J"]
       },
       {
         "time_zone": "US/Central",
-        "group": 0
+        "group": 0,
+        "people": []
       },
       {
         "time_zone": "US/Eastern",
-        "group": 0
+        "group": 0,
+        "people": []
       },
       {
         "time_zone": "Asia/Kolkata",
-        "group": 1
+        "group": 1,
+        "people": []
       },
       {
         "time_zone": "UTC",
-        "group": 2
+        "group": 2,
+        "people": []
       }
     ]
   },

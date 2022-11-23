@@ -18,8 +18,9 @@ type WorldClock struct {
 }
 
 type TimeZone struct {
-	TimeZone string `json:"time_zone"`
-	Group    int    `json:"group"`
+	TimeZone string   `json:"time_zone"`
+	Group    int      `json:"group"`
+	People   []string `json:"people"`
 }
 
 type Calendar struct{}

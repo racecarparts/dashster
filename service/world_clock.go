@@ -2,8 +2,9 @@ package service
 
 import (
 	"fmt"
-	"github.com/racecarparts/dashster/model"
 	"time"
+
+	"github.com/racecarparts/dashster/model"
 )
 
 const (
@@ -23,6 +24,7 @@ func WorldClock() []model.ClockTime {
 			Time:          time.Time{},
 			UtcOffset:     "+0000",
 			IsCurrentZone: false,
+			People:        tz.People,
 		}
 		loc, err := time.LoadLocation(tz.TimeZone)
 		if err != nil {

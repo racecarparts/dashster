@@ -34,6 +34,7 @@ func ReadOrCreateConfig() error {
 					{
 						TimeZone: "",
 						Group:    0,
+						People: []string{},
 					},
 				},
 			},

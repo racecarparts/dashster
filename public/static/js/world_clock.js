@@ -50,6 +50,14 @@ function calcTimes(timeZones) {
     return times
 }
 
+function formatPeople(data) {
+    let people = ""
+    for (let i = 0; i < data.length; i++) {
+        people += data[i].tz + ': ' + data[i].people + "<br>";
+    }
+    return people
+}
+
 function writeClock(data) {
     let text = ""
     let times = calcTimes(data)
@@ -57,6 +65,11 @@ function writeClock(data) {
         text += times[i] + "<br>";
     }
     writeWidget('world_clock', text)
+}
+
+function writePeople(data) {
+    peopleHtml = formatPeople(data)
+    writeWidget('team-tzs', peopleHtml)
 }
 
 function loadClock() {
@@ -69,6 +82,7 @@ function loadClock() {
             setInterval(() => {
                 writeClock(jsonData);
             }, 1000)
+            writePeople(jsonData);
         })
         .catch(err => {
             console.log(err)
