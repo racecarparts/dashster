@@ -1,5 +1,6 @@
 {{define "world_clock"}}
 <link href="/static/css/world_clock.css" type="text/css" rel="stylesheet" />
+<link href="/static/css/team_tzs.css" type="text/css" rel="stylesheet" />
 
 <div class="card wc-card">
     <div class="card-body">
@@ -13,15 +14,14 @@
                 <div class="col-4">
                     <pre class="card-text wc-clock-times" data-container="world_clock"></pre>
                 </div>
-                <div class="col-5">
+                <div class="col-6">
                     <div class="wc-container">
                         <svg id="daylight-map"></svg>
                     </div>
                 </div>
-                <div class="col-auto">
-                    <div data-container="team-tzs"></div>
-                </div>
+                <div class="col-auto team-tzs" data-container="team-tzs"></div>
             </div>
+            <!-- <div class="row team-tzs" data-container="team-tzs"></div> -->
         </div>
     </div>
 </div>

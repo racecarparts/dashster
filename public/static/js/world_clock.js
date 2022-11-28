@@ -53,8 +53,21 @@ function calcTimes(timeZones) {
 function formatPeople(data) {
     let people = ""
     for (let i = 0; i < data.length; i++) {
-        people += data[i].tz + ': ' + data[i].people + "<br>";
+        if (data[i].people.length === 0) {
+            continue
+        }
+        let peopleCol = '<div class="col">'
+        peopleCol += '<span class="team-tzs-header">' + data[i].tz + '</span><br>'
+
+
+        for (let j = 0; j < data[i].people.length; j++) {
+            peopleCol += data[i].people[j] + '<br>'
+        }
+        peopleCol += '</div>'
+        people += peopleCol
     }
+
+    
     return people
 }
 
