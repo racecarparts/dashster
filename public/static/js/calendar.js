@@ -42,6 +42,21 @@ function generateCalendar(d, id) {
           }
           todaySpan = todaySpan + '">' + day++ + '</span>'
           cal[i].push('<td class="day">' + todaySpan + '</td>');
+
+
+
+          // var todaySpan = '<span class="'
+          // if (d.getMonth() === now.getMonth() && day === now.getDate()) {
+          //   todaySpan = todaySpan + 'text-dark bg-light';
+          // }
+          // daySpacer = ''
+          // if (day <= 9 ) {
+          //   daySpacer += '&nbsp;'
+          // }
+          // todaySpan = todaySpan + '">' + day++ + '</span>'
+          // cal[i].push('<td class="day">&nbsp;' + daySpacer + todaySpan + '</td>');
+
+
         }
       }
     }
@@ -58,6 +73,7 @@ function generateCalendar(d, id) {
   cal = cal.reduce(function(a, b) {
     return a.concat(b);
   }, []).join('');
+  $('#' + id).empty();
   $('#' + id).append(cal);
 }
 
