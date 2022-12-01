@@ -40,7 +40,11 @@ function generateCalendar(d, id) {
           if (d.getMonth() === now.getMonth() && day === now.getDate()) {
             todaySpan = todaySpan + 'text-dark bg-light';
           }
-          todaySpan = todaySpan + '">' + day++ + '</span>'
+          var daySpace = ''
+          if (day < 10) {
+            daySpace = '&nbsp;'
+          }
+          todaySpan = todaySpan + '">' + daySpace + day++ + '</span>'
           cal[i].push('<td class="day">' + todaySpan + '</td>');
 
 

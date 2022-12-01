@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"sort"
 	"sync"
 
 	"github.com/goccy/go-json"
@@ -143,7 +144,25 @@ func getProjectMRs(project model.GLProject, org model.GitlabOrg) model.SimplePul
 		}
 	}
 
+	mrs.MyPRs = sortPullReqs(mrs.MyPRs)
+	mrs.RequestedPRs = sortPullReqs(mrs.RequestedPRs)
+
 	return mrs
+}
+
+func sortPullReqs(prs []model.SimplePullRequest) []model.SimplePullRequest {
+	sort.Slice(prs, func(i, j int) bool {
+		sortedByRepoName := false
+		sortedByMRNumber := false
+
+		sortedByRepoName = prs[i].RepositoryName < prs[j].RepositoryName
+		if prs[i].RepositoryName == prs[j].RepositoryName {
+			sortedByMRNumber = prs[i].Number < prs[j].Number
+			return sortedByMRNumber
+		}
+		return sortedByRepoName
+	})
+	return prs
 }
 
 func buildReviewerMap(approvalState model.GLApprovalState) []model.PullReview {
