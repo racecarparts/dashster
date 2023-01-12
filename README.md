@@ -33,7 +33,7 @@ On first run, the app will create a config file in your home directory:
 Then update the config file with what you need. 
 
 ## Development
-I'm not offering much help here right now.  Maybe someday I'll clean this up, but for now it's just a rough personal project. I chose to use plain JS, HTML, CSS, Bootstrap, and Go tmeplates. Why? It's a local desktop app. It works. Moving on.
+I'm not offering much help here right now.  Maybe someday I'll clean this up, but for now it's just a rough personal project. I chose to use plain JS, HTML, CSS, Bootstrap, and Go templates. Why? It's a local desktop app. It works. Moving on.
 
 There are several modules, some are commented out because 
 I don't use them or I changed my mind.
