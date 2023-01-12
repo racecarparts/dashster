@@ -60,8 +60,10 @@ type Gitlab struct {
 }
 
 type GitlabOrg struct {
-	Name         string `json:"name"`
-	BaseUrl      string `json:"base_url"`
-	PrivateToken string `json:"private_token"`
-	Username     string `json:"username"`
+	Name         string   `json:"name"`
+	BaseUrl      string   `json:"base_url"`
+	PrivateToken string   `json:"private_token"`
+	Username     string   `json:"username"`
+	GroupNames   []string `json:"group_names"`
+	FilterMRsByGroup bool `json:"filter_mrs_by_group"`
 }

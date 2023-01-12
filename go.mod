@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/JackMordaunt/icns v1.0.0 // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
+	github.com/cenkalti/backoff/v4 v4.2.0
 	github.com/docker/distribution v2.8.1+incompatible // indirect
 	github.com/docker/docker v20.10.21+incompatible
 	github.com/docker/go-connections v0.4.0 // indirect

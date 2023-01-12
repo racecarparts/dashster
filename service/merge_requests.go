@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"sort"
 	"sync"
+	"time"
 
 	"github.com/goccy/go-json"
 
 	"github.com/racecarparts/dashster/model"
 )
+
+const groupsUrlPath = "/groups"
 
 func MergeRequests() model.SimplePullRequests {
 	if !model.AppConfig.Gitlab.Enabled {
@@ -40,6 +43,13 @@ func orgMRs(org model.GitlabOrg) (model.SimplePullRequests, error) {
 
 	mrs := model.SimplePullRequests{}
 
+	teamMembers, err := getTeamMembers(org)
+	if err != nil {
+		mrs.Message = fmt.Sprintf("could not get team members: %s", err.Error())
+		fmt.Println(mrs.Message)
+		return mrs, err
+	}
+
 	projectUrl := fmt.Sprintf("%s%s", org.BaseUrl, "/projects?starred=true")
 	projectsBody, err := getRequestBearerAuth(projectUrl, org.PrivateToken)
 	if err != nil {
@@ -63,7 +73,8 @@ func orgMRs(org model.GitlabOrg) (model.SimplePullRequests, error) {
 
 		go func(prj model.GLProject) {
 			defer wg.Done()
-			mrs := getProjectMRs(prj, org)
+			mrs := getProjectMRs(prj, org, teamMembers)
+			// TODO: this should be a channel
 			projectMRs[prj.Id] = mrs
 		}(project)
 	}
@@ -81,10 +92,13 @@ func orgMRs(org model.GitlabOrg) (model.SimplePullRequests, error) {
 		}
 	}
 
+	mrs.MyPRs = sortPullReqs(mrs.MyPRs)
+	mrs.RequestedPRs = sortPullReqs(mrs.RequestedPRs)
+
 	return mrs, nil
 }
 
-func getProjectMRs(project model.GLProject, org model.GitlabOrg) model.SimplePullRequests {
+func getProjectMRs(project model.GLProject, org model.GitlabOrg, teamMembers map[string]model.GLUser) model.SimplePullRequests {
 	mrs := model.SimplePullRequests{
 		Message:      "",
 		MyPRs:        []model.SimplePullRequest{},
@@ -108,6 +122,29 @@ func getProjectMRs(project model.GLProject, org model.GitlabOrg) model.SimplePul
 	}
 
 	for _, mr := range mrList {
+		if org.FilterMRsByGroup {
+			if _, ok := teamMembers[mr.Author.Username]; !ok {
+				continue
+			}
+		}
+
+		notesPath := fmt.Sprintf("/projects/%d/merge_requests/%d/notes", project.Id, mr.Iid)
+		notesUrl := fmt.Sprintf("%s%s", org.BaseUrl, notesPath)
+		notesBody, err := getRequestBearerAuth(notesUrl, org.PrivateToken)
+		if err != nil {
+			mrs.Message = fmt.Sprint(notesUrl, err)
+			fmt.Println(mrs.Message)
+			return mrs
+		}
+
+		notes := []model.MergeRequestNote{}
+		err = json.Unmarshal(notesBody, &notes)
+		if err != nil {
+			mrs.Message = fmt.Sprintf("could not unmarshall MR notes bytes: %s", err)
+			fmt.Println(mrs.Message)
+			return mrs
+		}
+
 		path := fmt.Sprintf("/projects/%d/merge_requests/%d/approval_state", project.Id, mr.Iid)
 		approvalStateUrl := fmt.Sprintf("%s%s", org.BaseUrl, path)
 		apprStateBody, err := getRequestBearerAuth(approvalStateUrl, org.PrivateToken)
@@ -125,7 +162,7 @@ func getProjectMRs(project model.GLProject, org model.GitlabOrg) model.SimplePul
 			return mrs
 		}
 
-		reviewers := buildReviewerMap(approvalState)
+		reviewers := buildReviewerMap(approvalState, notes)
 
 		simplePR := model.SimplePullRequest{
 			RepositoryName: project.Name,
@@ -135,6 +172,8 @@ func getProjectMRs(project model.GLProject, org model.GitlabOrg) model.SimplePul
 			Reviews:        reviewers,
 			SHA:            mr.SHA[:7],
 			WebURL:         mr.WebURL,
+			UpdatedAt:      mr.UpdatedAt.In(time.Local).Format("02 Jan 03:04PM"),
+			UpdatedAtTime:  mr.UpdatedAt,
 		}
 
 		if mr.Author.Username == org.Username {
@@ -144,37 +183,106 @@ func getProjectMRs(project model.GLProject, org model.GitlabOrg) model.SimplePul
 		}
 	}
 
-	mrs.MyPRs = sortPullReqs(mrs.MyPRs)
-	mrs.RequestedPRs = sortPullReqs(mrs.RequestedPRs)
-
 	return mrs
 }
 
-func sortPullReqs(prs []model.SimplePullRequest) []model.SimplePullRequest {
-	sort.Slice(prs, func(i, j int) bool {
-		sortedByRepoName := false
-		sortedByMRNumber := false
+func getTeamMembers(org model.GitlabOrg) (map[string]model.GLUser, error) {
+	if !org.FilterMRsByGroup {
+		return map[string]model.GLUser{}, nil
+	}
 
-		sortedByRepoName = prs[i].RepositoryName < prs[j].RepositoryName
-		if prs[i].RepositoryName == prs[j].RepositoryName {
-			sortedByMRNumber = prs[i].Number < prs[j].Number
-			return sortedByMRNumber
+	groups, err := getConfigGroups(org)
+	if err != nil {
+		return map[string]model.GLUser{}, err
+	}
+
+	teamMembers := map[string]model.GLUser{}
+	for _, group := range groups {
+		membersUrl := fmt.Sprintf("%s%s/%d/members", org.BaseUrl, groupsUrlPath, group.Id)
+		membersBody, err := getRequestBearerAuth(membersUrl, org.PrivateToken)
+		if err != nil {
+			return map[string]model.GLUser{}, err
 		}
-		return sortedByRepoName
-	})
-	return prs
-}
 
-func buildReviewerMap(approvalState model.GLApprovalState) []model.PullReview {
-	reviewers := make(map[model.GLUser]string, 0)
+		members := []model.GLUser{}
+		err = json.Unmarshal(membersBody, &members)
+		if err != nil {
+			return map[string]model.GLUser{}, err
+		}
 
-	for _, rule := range approvalState.Rules {
-		for _, approver := range rule.ApprovedBy {
-			reviewers[approver] = "Approved"
+		for _, member := range members {
+			teamMembers[member.Username] = member
 		}
 	}
 
-	reviews := make([]model.PullReview, len(reviewers))
+	return teamMembers, nil
+}
+
+func getConfigGroups(org model.GitlabOrg) ([]model.GLGroup, error) {
+	if len(org.GroupNames) == 0 {
+		return []model.GLGroup{}, nil
+	}
+
+	groupsUrl := fmt.Sprintf("%s%s", org.BaseUrl, groupsUrlPath)
+	groupsBody, err := getRequestBearerAuth(groupsUrl, org.PrivateToken)
+	if err != nil {
+		return []model.GLGroup{}, err
+	}
+
+	allGroups := []model.GLGroup{}
+	err = json.Unmarshal(groupsBody, &allGroups)
+	if err != nil {
+		return []model.GLGroup{}, err
+	}
+
+	foundGroups := []model.GLGroup{}
+	for _, groupName := range org.GroupNames {
+		for _, group := range allGroups {
+			if group.Name == groupName {
+				foundGroups = append(foundGroups, group)
+				break
+			}
+		}
+	}
+
+	return foundGroups, nil
+}
+
+func sortPullReqs(prs []model.SimplePullRequest) []model.SimplePullRequest {
+	// sort.Slice(prs, func(i, j int) bool {
+	// 	sortedByRepoName := false
+	// 	sortedByMRNumber := false
+
+	// 	sortedByRepoName = prs[i].RepositoryName < prs[j].RepositoryName
+	// 	if prs[i].RepositoryName == prs[j].RepositoryName {
+	// 		sortedByMRNumber = prs[i].Number < prs[j].Number
+	// 		return sortedByMRNumber
+	// 	}
+	// 	return sortedByRepoName
+	// })
+
+	sort.Slice(prs, func(i, j int) bool {
+		return prs[i].UpdatedAtTime.After(prs[j].UpdatedAtTime)
+	})
+
+	return prs
+}
+
+func buildReviewerMap(approvalState model.GLApprovalState, notes []model.MergeRequestNote) []model.PullReview {
+	reviewers := make(map[model.GLUser]string, 0)
+	commenters := make(map[model.GLUser]string, 0)
+
+	for _, rule := range approvalState.Rules {
+		for _, approver := range rule.ApprovedBy {
+			reviewers[approver] = "✅"
+		}
+	}
+
+	for _, comment := range notes {
+		commenters[comment.Author] = "💬"
+	}
+
+	reviews := make([]model.PullReview, len(reviewers)+len(commenters))
 	i := 0
 	for k, v := range reviewers {
 		r := model.PullReview{
@@ -186,6 +294,22 @@ func buildReviewerMap(approvalState model.GLApprovalState) []model.PullReview {
 		reviews[i] = r
 		i += 1
 	}
+
+	i = len(reviewers)
+	for k, v := range commenters {
+		r := model.PullReview{
+			User: model.GithubUser{
+				Login: k.Username,
+			},
+			State: v,
+		}
+		reviews[i] = r
+		i += 1
+	}
+
+	sort.Slice(reviews[:], func(i, j int) bool {
+		return reviews[i].State < reviews[j].State
+	})
 
 	return reviews
 }

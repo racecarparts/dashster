@@ -40,9 +40,9 @@ I don't use them or I changed my mind.
 
 Some of the modules (some are disabled in code):
 * 3 month calendar
-* Local machine docker processes (docker ps)
+* Local machine docker processes
 * Gitlab MRs
-* Github PRs
-* Personal calendar agenda list (macOS specific)
+* Github PRs (disabled)
+* Personal calendar agenda list (macOS specific - disabled)
 * Weather
 * World clock with daylight tracker

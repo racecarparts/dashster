@@ -89,7 +89,9 @@
       {
         "name": "Example",
         "projects_base_url": "https://gitlab.example.com/api/v4/projects?starred=true&private_token=%s",
-        "private_token": "<super-secret-access-key>"
+        "private_token": "<super-secret-access-key>",
+        "username": "<gitlab-username>",
+        "group_names": ["<name-of-group-with-users-to-filter-MRs"] 
       }
     ]
   }

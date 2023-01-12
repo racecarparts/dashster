@@ -34,7 +34,7 @@ func ReadOrCreateConfig() error {
 					{
 						TimeZone: "",
 						Group:    0,
-						People: []string{},
+						People:   []string{},
 					},
 				},
 			},
@@ -80,6 +80,9 @@ func ReadOrCreateConfig() error {
 						Name:         "",
 						BaseUrl:      "",
 						PrivateToken: "",
+						Username:     "",
+						GroupNames:   []string{},
+						FilterMRsByGroup: false,
 					},
 				},
 			},

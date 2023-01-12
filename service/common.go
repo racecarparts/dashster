@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os/exec"
 	"strconv"
+
+	"github.com/cenkalti/backoff/v4"
 )
 
 // run a command using the shell; no need to split args
@@ -25,6 +27,24 @@ func runcmd(cmd string, shell bool) []byte {
 		log.Println(err)
 	}
 	return out
+}
+
+func getRequestWithBackoff(url string) ([]byte, error) {
+	resp := []byte{}
+	op := func() error {
+		var err error
+		resp, err = getRequest(url)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	err := backoff.Retry(op, backoff.NewExponentialBackOff())
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return resp, nil
 }
 
 func getRequest(url string) ([]byte, error) {

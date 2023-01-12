@@ -1,4 +1,4 @@
-const prInterval = 1800000 // every 30 minutes
+const prInterval = 900000 // every 15 minutes
 
 function writePRRows(prDataArr, outerEl, sectionTitle) {
     for (let i = 0; i < prDataArr.length; i++) {
@@ -42,6 +42,11 @@ function writePRRows(prDataArr, outerEl, sectionTitle) {
         }
         approvalsEl.innerHTML = approvals
         rowEl.appendChild(approvalsEl)
+
+        let updatedEl = document.createElement("td")
+        updatedEl.className = "text-nowrap"
+        updatedEl.innerHTML = pr.updated_at
+        rowEl.appendChild(updatedEl)
 
         outerEl.appendChild(rowEl)
     }

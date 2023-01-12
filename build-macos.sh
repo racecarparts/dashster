@@ -92,7 +92,7 @@ then
     cp -r ./$appify_NAME.app /Applications
 fi
 
-read -p "Delete build? ("$PWD/$appify_NAME.app")" -n 1 -r
+read -p "Delete build? ("$PWD/$appify_NAME.app") " -n 1 -r
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then

@@ -72,6 +72,8 @@ type SimplePullRequest struct {
 	IsDraft        bool         `json:"is_draft"`
 	SHA            string       `json:"sha"`
 	WebURL         string       `json:"web_url"`
+	UpdatedAt      string       `json:"updated_at"`
+	UpdatedAtTime  time.Time    `json:"-"`
 }
 
 type MyCal struct {
