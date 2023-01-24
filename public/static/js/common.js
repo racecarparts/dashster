@@ -67,3 +67,12 @@ $( document ).ready(function() {
 
     $(".panel").height(maxHeight);
 });
+
+function setupInterval(intervalId, intervalDuration, intervalFunc) {
+    clearInterval(intervalId)
+    intervalId = setInterval(() => {
+        intervalFunc()
+    }, intervalDuration)
+
+    return intervalId
+}

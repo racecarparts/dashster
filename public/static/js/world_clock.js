@@ -1,4 +1,5 @@
 const daylightMapInterval = 900000 // 15 minutes
+let daylightMapIntervalId;
 
 function calcTimes(timeZones) {
     let d = new Date()
@@ -537,9 +538,8 @@ function daylightMap() {
         // });
     });
 
+    daylightMapIntervalId = setupInterval(daylightMapIntervalId, daylightMap);
+
 }
 
 daylightMap();
-setInterval(() => {
-    daylightMap();
-}, daylightMapInterval)

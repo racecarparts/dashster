@@ -1,4 +1,5 @@
 const prInterval = 900000 // every 15 minutes
+let prIntervalId;
 
 function writePRRows(prDataArr, outerEl, sectionTitle) {
     for (let i = 0; i < prDataArr.length; i++) {
@@ -80,6 +81,8 @@ function loadPRs() {
         .then(jsonData => {
             writePRs(jsonData)
             enableButton('load-prs')
+            
+            prIntervalId = setupInterval(prIntervalId, prInterval, loadPRs)
         })
         .catch(err => {
             writeWidget('pr-interval', 'error: ' + err)
@@ -87,6 +90,7 @@ function loadPRs() {
             console.log(err)
         })
 }
+
 // writePRs(
 //     {message: "",
 //         my_prs: [
@@ -137,6 +141,3 @@ function loadPRs() {
 //     })
 
 loadPRs()
-setInterval(() => {
-    loadPRs()
-}, prInterval)

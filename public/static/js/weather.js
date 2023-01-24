@@ -1,4 +1,5 @@
 const weatherInterval = 1800000 // every 30 minutes
+let weatherIntervalId;
 
 function writeWeather(weatherData) {
     let weather = ""
@@ -23,6 +24,8 @@ function loadWeather() {
         .then(jsonData => {
             writeWeather(jsonData)
             enableButton('load-weather')
+            weatherIntervalId = setupInterval(weatherIntervalId, weatherInterval, loadWeather)
+
         })
         .catch(err => {
             writeWidget('weather-interval', 'error: ' + err)
@@ -32,6 +35,3 @@ function loadWeather() {
 }
 
 loadWeather()
-setInterval(() => {
-    loadWeather()
-}, weatherInterval)

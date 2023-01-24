@@ -1,4 +1,5 @@
 const calendarInterval = 3600000 // every hour
+let calendarIntervalId;
 
 function generateCalendar(d, id) {
   function monthDays(month, year) {
@@ -102,9 +103,8 @@ function writeCalendar() {
       currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1)
     }
     generateCalendar(currentDate, 'calendar-table-next');
+
+    calendarIntervalId = setupInterval(calendarIntervalId, calendarInterval, writeCalendar);
 }
 
 writeCalendar()
-setInterval(() => {
-  writeCalendar()
-}, calendarInterval)
