@@ -55,7 +55,6 @@ function writePRRows(prDataArr, outerEl, sectionTitle) {
 }
 
 function writePRs(prData) {
-    console.log(prData)
     if (!prData.my_prs && !prData.requested_prs) {
         writeWidget('pr-interval', timeIntervalStr(prInterval))
         return
