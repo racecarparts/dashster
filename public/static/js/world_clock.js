@@ -538,8 +538,7 @@ function daylightMap() {
         // });
     });
 
-    daylightMapIntervalId = setupInterval(daylightMapIntervalId, daylightMap);
-
+    daylightMapIntervalId = setupInterval(daylightMapIntervalId, daylightMapInterval, daylightMap);
 }
 
 daylightMap();
