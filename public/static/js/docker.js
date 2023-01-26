@@ -1,4 +1,5 @@
-const dockerInterval = 30000 // every 30 seconds
+const dockerInterval = 15000 // every 15 seconds
+let dockerIntervalId
 
 function writeDocker(dockerData) {
     writeWidget('docker', dockerData.stat)
@@ -11,6 +12,7 @@ function loadDocker() {
         .then(r => r.json())
         .then(jsonData => {
             writeDocker(jsonData)
+            dockerIntervalId = setupInterval(dockerIntervalId, dockerInterval, loadDocker)
         })
         .catch(err => {
             console.log(err)
@@ -18,6 +20,3 @@ function loadDocker() {
 }
 
 loadDocker()
-setInterval(() => {
-    loadDocker()
-}, dockerInterval)
