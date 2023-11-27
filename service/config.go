@@ -3,7 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/racecarparts/dashster/model"
@@ -24,7 +24,7 @@ func ReadOrCreateConfig() error {
 	}
 	defer confFile.Close()
 
-	confData, err := ioutil.ReadAll(confFile)
+	confData, err := io.ReadAll(confFile)
 
 	if len(confData) == 0 {
 		model.AppConfig = &model.Config{
@@ -77,11 +77,11 @@ func ReadOrCreateConfig() error {
 				Enabled: false,
 				Organizations: []model.GitlabOrg{
 					{
-						Name:         "",
-						BaseUrl:      "",
-						PrivateToken: "",
-						Username:     "",
-						GroupNames:   []string{},
+						Name:             "",
+						BaseUrl:          "",
+						PrivateToken:     "",
+						Username:         "",
+						GroupNames:       []string{},
 						FilterMRsByGroup: false,
 					},
 				},

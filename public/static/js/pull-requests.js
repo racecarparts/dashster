@@ -1,5 +1,6 @@
 const prInterval = 900000 // every 15 minutes
 let prIntervalId;
+const prMrPath = "/pullrequests"
 
 function writePRRows(prDataArr, outerEl, sectionTitle) {
     for (let i = 0; i < prDataArr.length; i++) {
@@ -19,7 +20,7 @@ function writePRRows(prDataArr, outerEl, sectionTitle) {
 
         let prLinkCellEl = document.createElement("td")
         let prLinkEl = document.createElement("a")
-        prLinkEl.setAttribute("onclick", "openUrl('"+ pr.web_url +"')")
+        prLinkEl.setAttribute("onclick", "openUrl('"+ pr.review_url +"')")
         prLinkEl.setAttribute("href", "#")
         prLinkEl.innerHTML = pr.number
         prLinkCellEl.appendChild(prLinkEl)
@@ -73,7 +74,7 @@ function writePRs(prData) {
 function loadPRs() {
     disableButton('load-prs')
     writeWidget('pr-interval', 'loading...')
-    fetch('/mergerequests', {
+    fetch(prMrPath, {
         method: 'get'
     })
         .then(r => r.json())

@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/racecarparts/dashster/model"
 	"sync"
+	"time"
+
+	"github.com/racecarparts/dashster/model"
 )
 
 //func openPRListAsStr(orgs []model.GithubOrg, nextInterval time.Duration) string {
@@ -184,6 +186,8 @@ func createSimplePR(repo model.Repo, pr model.PullRequest) (model.SimplePullRequ
 		ReviewUrl:      pr.HtmlUrl,
 		IsDraft:        pr.Draft,
 		SHA:            pr.Head.SHA[0:7],
+		UpdatedAt:      pr.UpdatedAt.In(time.Local).Format("02 Jan 06 03:04PM"),
+		UpdatedAtTime:  pr.UpdatedAt,
 	}
 
 	reviews, err := getGithubPullReviews(repo, pr)

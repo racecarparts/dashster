@@ -104,6 +104,7 @@ type PullRequest struct {
 	State              string       `json:"state"`
 	Draft              bool         `json:"draft"`
 	Head               GithubHead   `json:"head"`
+	UpdatedAt          time.Time    `json:"updated_at"`
 }
 
 type GithubHead struct {
